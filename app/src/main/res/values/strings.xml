@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Color2048</string>
+    <string name="score">得分</string>
+    <string name="maxScore">最高分</string>
+    <string name="gameOverTitle">游戏结束</string>
+    <string name="gameOverMessage">游戏结束</string>
+    <string name="save">保存</string>
+    <string name="save_s">保存成功</string>
+    <string name="load">读取</string>
+    <string name="load_s">读取成功</string>
+    <string name="retry">重来</string>
+    <string name="retry_s">重新开始游戏？</string>
+    <string name="continueGame">继续游戏</string>
+    <string name="congratulation">恭喜！</string>
+    <string name="get2048">你达成了2048！</string>
+    <string name="getMaxScore">你是当前的最高分</string>
+    <string name="tip">提示</string>
+    <string name="exitTitle">退出游戏</string>
+    <string name="exitMessage">游戏尚未保存，是否退出？</string>
+    <string name="OK">确定</string>
+    <string name="cancel">取消</string>
+
+
+
+</resources>
