@@ -29,7 +29,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:text="4"
-            android:textSize="24dp"
+            android:textSize="24sp"
             android:textColor="@color/textLight"
             android:id="@+id/textScore"/>
     </RelativeLayout>
@@ -43,38 +43,45 @@
     android:gravity="center"
     android:layout_marginLeft="60dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/maxScore"
-        android:textColor="@color/block0"
-        android:layout_centerHorizontal="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/maxScore"
+            android:textColor="@color/block0" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="4"
-        android:textSize="24dp"
-        android:textColor="@color/textLight"
-        android:id="@+id/textMaxScore"/>
+        <TextView
+            android:id="@+id/textMaxScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="4"
+            android:textColor="@color/textLight"
+            android:textSize="24sp" />
     </RelativeLayout>
 
-    <com.example.shenjing.color2048.GameView
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_marginBottom="10dp"
-        android:padding="5dp"
-        android:id="@+id/gameView"
-        />
+        android:layout_marginBottom="10dp">
+
+        <com.example.shenjing.color2048.GameView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:padding="5dp"
+            android:id="@+id/gameView" />
+
+    </FrameLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/gameView">
+        android:layout_below="@id/frameLayout">
 
         <Button
             android:layout_alignParentBottom="true"

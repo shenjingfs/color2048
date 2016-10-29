@@ -17,7 +17,7 @@
     <string name="getMaxScore">You get max Score！</string>
     <string name="tip">Tip</string>
     <string name="exitTitle">Exit</string>
-    <string name="exitMessage">Exit without save？</string>
+    <string name="exitMessage">Exit game？</string>
     <string name="OK">OK</string>
     <string name="cancel">Cancel</string>
 </resources>

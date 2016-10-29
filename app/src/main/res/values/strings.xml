@@ -16,7 +16,7 @@
     <string name="getMaxScore">你是当前的最高分</string>
     <string name="tip">提示</string>
     <string name="exitTitle">退出游戏</string>
-    <string name="exitMessage">游戏尚未保存，是否退出？</string>
+    <string name="exitMessage">退出游戏？</string>
     <string name="OK">确定</string>
     <string name="cancel">取消</string>
 

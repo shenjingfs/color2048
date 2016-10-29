@@ -1,5 +1,9 @@
 package com.example.shenjing.color2048;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -19,6 +23,7 @@ import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Created by shenjing on 2016/5/5.
@@ -27,13 +32,17 @@ public class GameView extends GridLayout implements Serializable{
     DisplayMetrics dm = getResources().getDisplayMetrics();
     public int width = dm.widthPixels;
     public int height = dm.heightPixels;
+    private int BLOCK_WIDTH = (int) (width * 0.225);
+    private FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(BLOCK_WIDTH, BLOCK_WIDTH);
     public Block blocks[][] = new Block[4][4];
     public ArrayList<Point> points = new ArrayList<>();
+    private LinkedList<Block> recBlocks = new LinkedList<>();
     private int flag2048 = 0;
     private boolean flagInit = false;
     public int score = 4;
     public int maxScore = 4;
     private TextView tv,tv2;
+    public FrameLayout frameLayout;
     SharedPreferences sf;
 
     public GameView(Context context, AttributeSet attrs) {
@@ -57,7 +66,6 @@ public class GameView extends GridLayout implements Serializable{
         for (int x = 0; x < 4; x++) {
             for (int y = 0; y < 4; y++) {
                 blocks[x][y] = new Block(getContext());
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int)(width*0.225),(int)(width*0.225));
                 addView(blocks[x][y],lp);
                 points.add(new Point(x,y));
             }
@@ -100,7 +108,6 @@ public class GameView extends GridLayout implements Serializable{
             }
         });
 
-
     }
 
 
@@ -123,229 +130,304 @@ public class GameView extends GridLayout implements Serializable{
 
 
     public void swipeLeft(){
-        boolean flag = false;
+        boolean mergeFlag = false;
+        boolean moveFlag = false;
         for (int x = 0; x < 4; x++) {
             for (int y = 0; y < 4; y++) {
-
                 if(blocks[x][y].getNum()!=0){
 
                     //最左为0的block
+                    int tempy = y;
                     int m;
                     for (m=y; m > 0; m--) {
                         if (blocks[x][m-1].getNum()!=0)
                             break;
                     }
-                    //左移
-                    if (m!=y) {
-                        //blocks[x][y].move(x,x,y,m);
-                        blocks[x][m].setNum(blocks[x][y].getNum());
-                        points.remove(new Point(x,m));
-                        blocks[x][y].setNum(0);
-                        points.add(new Point(x,y));
-                        flag = true;
-                        y = m;
-                    }
-
-                    //相同的合并
+                    //合并
+                    boolean merge = false;
                     for (int n = y+1; n < 4; n++){
                         if (blocks[x][n].getNum()==0) {
                             continue;
                         }
-                        else if (blocks[x][y].equals(blocks[x][n])) {
-                            blocks[x][y].merge(blocks[x][n]);
-                            if(flag2048==0)
-                                if(blocks[x][y].getNum()==2048)
+                        if (blocks[x][y].equals(blocks[x][n])) {
+                            if (flag2048 == 0) {
+                                if (blocks[x][y].getNum() == 1024) {
                                     flag2048=1;
-                            flag = true;
-                            points.add(new Point(x,n));
-                            y=n;
+                                }
+                            }
+                            mergeFlag = true;
+                            merge = true;
+                            merge(x, y, x, n, x, m, blocks[x][y].getNum() * 2);
+                            tempy = n;
                         }
                         break;
                     }
-
+                    //移动
+                    if (!merge && m != y) {
+                        moveFlag = true;
+                        merge(x, m, x, y, x, m, blocks[x][y].getNum());
+                    }
+                    y = tempy;
                 }
 
             }
         }
-        if (flag)
-        addNum();
+        if (mergeFlag || moveFlag)
+            addNum();
     }
 
 
     public void swipeRight(){
-        boolean flag = false;
+        boolean mergeFlag = false;
+        boolean moveFlag = false;
         for (int x = 0; x < 4; x++) {
             for (int y = 3; y > -1; y--) {
 
                 if(blocks[x][y].getNum()!=0){
 
-
+                    int tempy = y;
                     int m;
                     for (m=y; m < 3; m++) {
                         if (blocks[x][m+1].getNum()!=0)
                             break;
                     }
-                    if (m!=y) {
-                        blocks[x][m].setNum(blocks[x][y].getNum());
-                        points.remove(new Point(x,m));
-                        blocks[x][y].setNum(0);
-                        points.add(new Point(x,y));
-                        flag = true;
-                        y = m;
-                    }
 
+                    boolean merge = false;
                     for (int n = y-1; n > -1; n--){
                         if (blocks[x][n].getNum()==0) {
                             continue;
                         }
-                        else if (blocks[x][y].equals(blocks[x][n])) {
-                            blocks[x][y].merge(blocks[x][n]);
+
+                        if (blocks[x][y].equals(blocks[x][n])) {
+
                             if(flag2048==0)
-                                if(blocks[x][y].getNum()==2048)
+                                if (blocks[x][y].getNum() == 1024)
                                     flag2048=1;
-                            flag = true;
-                            points.add(new Point(x,n));
-                            y=n;
+                            mergeFlag = true;
+                            merge = true;
+                            merge(x, y, x, n, x, m, blocks[x][y].getNum() * 2);
+                            tempy = n;
                         }
                         break;
                     }
+
+                    if (!merge && m != y) {
+                        moveFlag = true;
+                        merge(x, m, x, y, x, m, blocks[x][y].getNum());
+                    }
+                    y = tempy;
 
                 }
 
             }
         }
-        if (flag)
-        addNum();
+        if (mergeFlag || moveFlag) {
+            addNum();
+        }
     }
 
 
     public void swipeUp(){
-        boolean flag = false;
+        boolean mergeFlag = false;
+        boolean moveFlag = false;
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
-
                 if(blocks[x][y].getNum()!=0){
 
+                    int tempx = x;
                     int m;
                     for (m=x; m > 0; m--) {
                         if (blocks[m-1][y].getNum()!=0)
                             break;
                     }
-                    if (m!=x) {
-                        blocks[m][y].setNum(blocks[x][y].getNum());
-                        points.remove(new Point(m,y));
-                        blocks[x][y].setNum(0);
-                        points.add(new Point(x,y));
-                        flag = true;
-                        x = m;
-                    }
 
+                    boolean merge = false;
                     for (int n = x+1; n < 4; n++){
                         if (blocks[n][y].getNum()==0) {
                             continue;
                         }
-                        else if (blocks[x][y].equals(blocks[n][y])) {
-                            blocks[x][y].merge(blocks[n][y]);
-                            if(flag2048==0)
-                                if(blocks[x][y].getNum()==2048)
+                        if (blocks[x][y].equals(blocks[n][y])) {
+                            if (flag2048 == 0) {
+                                if (blocks[x][y].getNum() == 1024) {
                                     flag2048=1;
-                            flag = true;
-                            points.add(new Point(n,y));
-                            x=n;
+                                }
+                            }
+                            mergeFlag = true;
+                            merge = true;
+                            merge(x, y, n, y, m, y, blocks[x][y].getNum() * 2);
+                            tempx = n;
                         }
                         break;
                     }
 
+                    if (!merge && m != x) {
+                        moveFlag = true;
+                        merge(m, y, x, y, m, y, blocks[x][y].getNum());
+                    }
+                    x = tempx;
                 }
 
             }
         }
-        if (flag)
-        addNum();
+        if (mergeFlag || moveFlag) {
+            addNum();
+        }
     }
 
 
     public void swipeDown(){
+        boolean mergeFlag = false;
         boolean moveFlag = false;
         for (int y = 0; y < 4; y++) {
             for (int x = 3; x > -1; x--) {
 
                 if(blocks[x][y].getNum()!=0){
 
+                    int tempx = x;
                     int m;
+
                     for (m=x; m < 3; m++) {
                         if (blocks[m+1][y].getNum()!=0)
                             break;
                     }
-                    if (m!=x) {
-                        blocks[m][y].setNum(blocks[x][y].getNum());
-                        points.remove(new Point(m,y));
-                        blocks[x][y].setNum(0);
-                        points.add(new Point(x,y));
-                        moveFlag = true;
-                        x = m;
-                    }
+
+                    boolean merge = false;
 
                     for (int n = x-1; n > -1; n--){
                         if (blocks[n][y].getNum()==0) {
                             continue;
                         }
-                        else if (blocks[x][y].equals(blocks[n][y])) {
-                            blocks[x][y].merge(blocks[n][y]);
-                            if(flag2048==0)
-                                if(blocks[x][y].getNum()==2048)
+
+                        if (blocks[x][y].equals(blocks[n][y])) {
+                            if (flag2048 == 0) {
+                                if (blocks[x][y].getNum() == 1024) {
                                     flag2048=1;
-                            moveFlag = true;
-                            points.add(new Point(n,y));
-                            x=n;
+                                }
+                            }
+                            mergeFlag = true;
+                            merge = true;
+                            merge(x, y, n, y, m, y, blocks[x][y].getNum() * 2);
+                            tempx = n;
                         }
+
                         break;
                     }
+
+                    if (!merge && m != x) {
+                        moveFlag = true;
+                        merge(m, y, x, y, m, y, blocks[x][y].getNum());
+                    }
+                    x = tempx;
 
                 }
 
             }
         }
-        if (moveFlag)
-        addNum();
+        if (mergeFlag || moveFlag) {
+            addNum();
+        }
     }
 
 
-//    public void move(final int fromX, final int toX, final int fromY, final int toY){
-//        //AnimationSet as = new AnimationSet(true);
-//        //final Block b = new Block(getContext(),blocks[fromX][fromY].getNum());
-//        TranslateAnimation ta = new TranslateAnimation(0,(toY-fromY)*width/4,0,(toX-fromX)*width/4);
-//        ta.setDuration(500);
-//        ta.setFillBefore(true);
-//        ta.setAnimationListener(new Animation.AnimationListener() {
-//            @Override
-//            public void onAnimationStart(Animation animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animation animation) {
-//                blocks[fromX][fromY].setNum(blocks[toX][toY].getNum());
-//                blocks[toX][toY].setNum(0);
-//                points.remove(new Point(toX,toY));
-//                points.add(new Point(fromX,fromY));
-//                blocks[fromX][fromY].setAnimation(null);
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animation animation) {
-//
-//            }
-//        });
-//        //as.addAnimation(ta);
-//        blocks[fromX][fromY].startAnimation(ta);
-//
-//    }
+    public Block newBlock(int num) {
+        Block b;
+        if (recBlocks.isEmpty()) {
+            b = new Block(getContext());
+            frameLayout.addView(b);
+        } else
+            b = recBlocks.remove(0);
+        b.setNum(num);
+        return b;
+    }
+
+    public void recBlocks(Block b) {
+        b.setVisibility(INVISIBLE);
+        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(b, "translationX", 0, 0).setDuration(10);
+        objectAnimatorX.start();
+        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(b, "translationY", 0, 0).setDuration(10);
+        objectAnimatorY.start();
+        recBlocks.add(b);
+    }
+
+    public void merge(final int fromX1, final int fromY1, final int fromX2, final int fromY2, final int toX, final int toY, final int num) {
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        if (fromX1 != toX || fromY1 != toY) {
+            animatorSet.play(moveAnimation(fromX2, fromY2, toX, toY)).with(moveAnimation(fromX1, fromY1, toX, toY));
+        } else {
+            animatorSet.play(moveAnimation(fromX2, fromY2, toX, toY));
+        }
+        if (fromX1 != toX || fromY1 != toY) {
+            blocks[fromX1][fromY1].setNum(0);
+        }
+        blocks[fromX2][fromY2].setNum(0);
+        blocks[toX][toY].setNum(num);
+        if (fromX1 != toX || fromY1 != toY) {
+            points.add(new Point(fromX1, fromY1));
+        }
+        points.add(new Point(fromX2, fromY2));
+        points.remove(new Point(toX, toY));
+
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                //super.onAnimationStart(animation);
+                blocks[toX][toY].setVisibility(INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                //super.onAnimationEnd(animation);
+                blocks[toX][toY].setVisibility(VISIBLE);
+
+                AnimatorSet as = new AnimatorSet();
+                ObjectAnimator scaleAnimatorX = ObjectAnimator.ofFloat(blocks[toX][toY], "scaleX", 1.0f, 1.1f, 1.0f).setDuration(100);
+                ObjectAnimator scaleAnimatorY = ObjectAnimator.ofFloat(blocks[toX][toY], "scaleY", 1.0f, 1.1f, 1.0f).setDuration(100);
+                as.play(scaleAnimatorX).with(scaleAnimatorY);
+                as.start();
+            }
+        });
+
+        animatorSet.start();
+    }
+
+
+    public ObjectAnimator moveAnimation(final int fromX, final int fromY, final int toX, final int toY) {
+        final Block tempBlock = newBlock(blocks[fromX][fromY].getNum());
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(BLOCK_WIDTH, BLOCK_WIDTH);
+        lp.leftMargin = fromY * BLOCK_WIDTH + 20;
+        lp.topMargin = fromX * BLOCK_WIDTH + 20;
+        tempBlock.setLayoutParams(lp);
+        ObjectAnimator objectAnimator;
+        if (fromX == toX)
+            objectAnimator = ObjectAnimator.ofFloat(tempBlock, "translationX", 0, (toY - fromY) * BLOCK_WIDTH).setDuration(100);
+        else if (fromY == toY)
+            objectAnimator = ObjectAnimator.ofFloat(tempBlock, "translationY", 0, (toX - fromX) * BLOCK_WIDTH).setDuration(100);
+        else
+            objectAnimator = ObjectAnimator.ofFloat(tempBlock, "scaleX", 10, 1).setDuration(10);
+        objectAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                //super.onAnimationStart(animation);
+                tempBlock.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                //super.onAnimationEnd(animation);
+                recBlocks(tempBlock);
+            }
+        });
+        return objectAnimator;
+
+    }
 
     public void addNum(){
         if(!flagInit){
-            tv = (TextView) ((View)getParent()).findViewById(R.id.textScore);
-            tv2 = (TextView) ((View)getParent()).findViewById(R.id.textMaxScore);
+            tv = (TextView) ((View) getParent().getParent()).findViewById(R.id.textScore);
+            tv2 = (TextView) ((View) getParent().getParent()).findViewById(R.id.textMaxScore);
+            frameLayout = (FrameLayout) getParent();
             flagInit=true;
         }
         Point p =points.remove((int)((Math.random())*points.size()));
@@ -353,7 +435,7 @@ public class GameView extends GridLayout implements Serializable{
         blocks[p.x][p.y].setNum(i);
         AnimationSet as = new AnimationSet(true);
         ScaleAnimation sa = new ScaleAnimation(0,1.1f,0,1.1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        sa.setDuration(150);
+        sa.setDuration(300);
         sa.getFillBefore();
         as.addAnimation(sa);
         blocks[p.x][p.y].startAnimation(as);
@@ -438,6 +520,7 @@ public class GameView extends GridLayout implements Serializable{
         if(!flagInit){
             tv = (TextView) ((View)getParent()).findViewById(R.id.textScore);
             tv2 = (TextView) ((View)getParent()).findViewById(R.id.textMaxScore);
+            frameLayout = (FrameLayout) getParent();
             flagInit=true;
         }
         points.clear();
