@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="block0">#BDBDBD</color>
+    <color name="block2">#EF5350</color>
+    <color name="block4">#FF7043</color>
+    <color name="block8">#FFA726</color>
+    <color name="block16">#FFCA28</color>
+    <color name="block32">#FFEE58</color>
+    <color name="block64">#D4E157</color>
+    <color name="block128">#9CCC65</color>
+    <color name="block256">#66BB6A</color>
+    <color name="block512">#26A69A</color>
+    <color name="block1024">#26C6DA</color>
+    <color name="block2048">#29B6F6</color>
+    <color name="block4096">#42A5F5</color>
+    <color name="block8192">#5C6BC0</color>
+    <color name="block16384">#7E57C2</color>
+    <color name="block32768">#AB47BC</color>
+    <color name="block65536">#EC407A</color>
+    <color name="blockOther">#8D6E63</color>
+    <color name="gameViewBackGround">#BCAAA4</color>
+    <color name="backGround">#FFEBEE</color>
+    
+    <color name="textDeep">#DD424242</color>
+    <color name="textLight">#E0E0E0</color>
+
+</resources>
