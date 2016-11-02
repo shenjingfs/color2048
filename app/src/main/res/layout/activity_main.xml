@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/score"
-            android:textColor="@color/block0"
+            android:textColor="@color/textDeep"
             android:layout_centerHorizontal="true"/>
 
         <TextView
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="@string/maxScore"
-            android:textColor="@color/block0" />
+            android:textColor="@color/textDeep" />
 
         <TextView
             android:id="@+id/textMaxScore"

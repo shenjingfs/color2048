@@ -26,7 +26,10 @@ public class MainActivity extends AppCompatActivity {
         tv2 = (TextView) findViewById(R.id.textMaxScore);
         tv2.setText(sf.getInt("maxScore",4)+"");
         gv =(GameView)findViewById(R.id.gameView);
+        gv.tv = (TextView) findViewById(R.id.textScore);
+        gv.tv2 = (TextView) findViewById(R.id.textMaxScore);
         gv.frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
+        gv.saved = (sf.getBoolean("saved", false));
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +92,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        gv.loadGame();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        gv.saveGame();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         gv.loadGame();
     }
 }
