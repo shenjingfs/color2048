@@ -41,7 +41,8 @@ public class GameView extends GridLayout implements Serializable{
     private boolean flagInit = false;
     public int score = 4;
     public int maxScore = 4;
-    private TextView tv,tv2;
+    public boolean saved;
+    public TextView tv, tv2;
     public FrameLayout frameLayout;
     SharedPreferences sf;
 
@@ -424,12 +425,12 @@ public class GameView extends GridLayout implements Serializable{
     }
 
     public void addNum(){
-        if(!flagInit){
-            tv = (TextView) ((View) getParent().getParent()).findViewById(R.id.textScore);
-            tv2 = (TextView) ((View) getParent().getParent()).findViewById(R.id.textMaxScore);
-            frameLayout = (FrameLayout) getParent();
-            flagInit=true;
-        }
+//        if(!flagInit){
+//            tv = (TextView) ((View) getParent().getParent()).findViewById(R.id.textScore);
+//            tv2 = (TextView) ((View) getParent().getParent()).findViewById(R.id.textMaxScore);
+//            frameLayout = (FrameLayout) getParent();
+//            flagInit=true;
+//        }
         Point p =points.remove((int)((Math.random())*points.size()));
         int i=Math.random()>0.1?2:4;
         blocks[p.x][p.y].setNum(i);
@@ -504,6 +505,10 @@ public class GameView extends GridLayout implements Serializable{
 
     public void saveGame(){
         SharedPreferences.Editor ed = sf.edit();
+        if (!saved) {
+            saved = true;
+        }
+        ed.putBoolean("saved", saved);
         for(int i=0;i<4;i++)
             for (int j=0;j<4;j++) {
                 ed.putInt("blocks"+(i*4+j),blocks[i][j].getNum());
@@ -517,26 +522,30 @@ public class GameView extends GridLayout implements Serializable{
     }
 
     public void loadGame(){
-        if(!flagInit){
-            tv = (TextView) ((View)getParent()).findViewById(R.id.textScore);
-            tv2 = (TextView) ((View)getParent()).findViewById(R.id.textMaxScore);
-            frameLayout = (FrameLayout) getParent();
-            flagInit=true;
+        if (saved) {
+//            if (!flagInit) {
+//                tv = (TextView) ((View) getParent()).findViewById(R.id.textScore);
+//                tv2 = (TextView) ((View) getParent()).findViewById(R.id.textMaxScore);
+//                frameLayout = (FrameLayout) getParent();
+//                flagInit = true;
+//            }
+            points.clear();
+            for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 4; j++) {
+                    int num = sf.getInt("blocks" + (i * 4 + j), 0);
+                    blocks[i][j].setNum(num);
+                    if (num == 0)
+                        points.add(new Point(i, j));
+                }
+            score = sf.getInt("score", 4);
+            tv.setText(score + "");
+            maxScore = sf.getInt("maxScore", 4);
+            tv2.setText(maxScore + "");
+            flag2048 = sf.getInt("flag2048", 0);
+            Toast.makeText(getContext(), R.string.load_s, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), R.string.load_f, Toast.LENGTH_SHORT).show();
         }
-        points.clear();
-        for(int i=0;i<4;i++)
-            for (int j=0;j<4;j++) {
-                int num=sf.getInt("blocks"+(i*4+j),0);
-                blocks[i][j].setNum(num);
-                if(num==0)
-                    points.add(new Point(i,j));
-            }
-        score = sf.getInt("score",4);
-        tv.setText(score+"");
-        maxScore = sf.getInt("maxScore",4);
-        tv2.setText(maxScore+"");
-        flag2048 = sf.getInt("flag2048",0);
-        Toast.makeText(getContext(),R.string.load_s,Toast.LENGTH_SHORT).show();
     }
 
 }

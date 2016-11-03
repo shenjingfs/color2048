@@ -19,7 +19,7 @@
     <string name="exitMessage">退出游戏？</string>
     <string name="OK">确定</string>
     <string name="cancel">取消</string>
-
+    <string name="load_f">读取失败，您可能没有存档！</string>
 
 
 </resources>

@@ -20,4 +20,5 @@
     <string name="exitMessage">Exit game？</string>
     <string name="OK">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="load_f">Load failed, you may not have archived!</string>
 </resources>
