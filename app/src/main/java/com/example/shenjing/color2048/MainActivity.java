@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         SharedPreferences sf = getSharedPreferences("score", Context.MODE_PRIVATE);
         tv2 = (TextView) findViewById(R.id.textMaxScore);
         tv2.setText(sf.getInt("maxScore",4)+"");
