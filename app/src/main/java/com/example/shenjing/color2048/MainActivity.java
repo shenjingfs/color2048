@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
         SharedPreferences sf = getSharedPreferences("score", Context.MODE_PRIVATE);
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         tv2.setText(sf.getInt("maxScore",4)+"");
         gv =(GameView)findViewById(R.id.gameView);
         gv.tv = (TextView) findViewById(R.id.textScore);
-        gv.tv2 = (TextView) findViewById(R.id.textMaxScore);
+        gv.tv2 = tv2;
         gv.frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
         gv.saved = (sf.getBoolean("saved", false));
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {

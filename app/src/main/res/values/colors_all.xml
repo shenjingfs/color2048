@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimaryRed">#E53935</color>
+    <color name="colorPrimaryRedDark">#D32F2F</color>
+    <color name="colorAccentRed">#FF4081</color>
+
     <color name="block0">#BDBDBD</color>
     <color name="block2">#EF5350</color>
     <color name="block4">#FF7043</color>
@@ -19,8 +23,8 @@
     <color name="block65536">#EC407A</color>
     <color name="blockOther">#8D6E63</color>
     <color name="gameViewBackGround">#BCAAA4</color>
-    <color name="backGround">#FFEBEE</color>
-    
+    <color name="backGround">#EEEEEE</color>
+
     <color name="textDeep">#DD424242</color>
     <color name="textLight">#E0E0E0</color>
 

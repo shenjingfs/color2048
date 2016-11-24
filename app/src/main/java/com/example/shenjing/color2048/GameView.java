@@ -442,6 +442,10 @@ public class GameView extends GridLayout implements Serializable{
         blocks[p.x][p.y].startAnimation(as);
         score += i;
         tv.setText(score+"");
+        if (score > maxScore) {
+            maxScore = score;
+            tv2.setText(maxScore + "");
+        }
 
         gameOver();
     }
@@ -482,7 +486,7 @@ public class GameView extends GridLayout implements Serializable{
         if (overFlag){
             String title = getResources().getString(R.string.gameOverTitle);
             String message = getResources().getString(R.string.gameOverMessage);
-            if (score>maxScore){
+            if (score >= maxScore) {
                 title = getResources().getString(R.string.congratulation);
                 message = getResources().getString(R.string.getMaxScore);
                 maxScore = score;
